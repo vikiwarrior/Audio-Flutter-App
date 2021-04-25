@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "552260027212",
+    "project_id": "audio-app-1305a",
+    "storage_bucket": "audio-app-1305a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552260027212:android:ee3a3946f38942c6f205e9",
+        "android_client_info": {
+          "package_name": "com.example.audio_flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "552260027212-kjkn3c179t5hff3ohd9bnea5pdhqrqac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzKP8L3NdnRG_dJQjGluPXLew01tY_tGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "552260027212-kjkn3c179t5hff3ohd9bnea5pdhqrqac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
