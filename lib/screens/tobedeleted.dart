@@ -29,7 +29,7 @@ class SignInPage extends StatelessWidget {
                 email: emailController.text.trim(),
                 password: passwordController.text.trim(),
               );
-
+            
               // fetch for user which id = firebase id
               //
             },

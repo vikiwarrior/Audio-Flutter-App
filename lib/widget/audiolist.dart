@@ -1,3 +1,4 @@
+import 'package:audio_flutter_app/auth/authentication_service.dart';
 import 'package:audio_flutter_app/provider/audio.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -18,13 +19,15 @@ class _AudioListState extends State<AudioList> {
   bool isPlaying;
   AudioPlayer audioPlayer;
   int selectedIndex;
-
+  String userid;
   @override
   void initState() {
     super.initState();
     isPlaying = false;
     audioPlayer = AudioPlayer();
     selectedIndex = -1;
+    AuthenticationService a;
+    userid = a.getUserid();
   }
 
   @override
@@ -33,16 +36,36 @@ class _AudioListState extends State<AudioList> {
       itemCount: widget.references.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
-            title: Text(widget.references.elementAt(index).title),
-            trailing: (selectedIndex == index) && (isPlaying == true)
-                ? IconButton(
-                    icon: Icon(Icons.pause),
-                    onPressed: () => _onpressedpause(index),
-                  )
-                : IconButton(
-                    icon: Icon(Icons.play_arrow),
-                    onPressed: () => _onpressedplay(index),
-                  ));
+          title: Text(widget.references.elementAt(index).title),
+          trailing: (selectedIndex == index) && (isPlaying == true)
+              ? IconButton(
+                  icon: Icon(Icons.pause),
+                  onPressed: () => _onpressedpause(index),
+                )
+              : IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  onPressed: () => _onpressedplay(index),
+                ),
+          leading: (widget.references.elementAt(index).likedBy != null &&
+                  widget.references
+                      .elementAt(index)
+                      .likedBy
+                      .any((element) => element == userid))
+              ? IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  onPressed: () => _onpressedlike(index),
+                )
+              : IconButton(
+                  icon: Icon(
+                    Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  onPressed: () => _onpressedunlike(index),
+                ),
+        );
       },
     );
   }
@@ -77,4 +100,7 @@ class _AudioListState extends State<AudioList> {
       isPlaying = false;
     });
   }
+
+  Future<void> _onpressedlike(int index) async {}
+  Future<void> _onpressedunlike(int index) async {}
 }
