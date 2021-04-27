@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Simple Login Example"),
+      title: new Text("Login Page"),
       centerTitle: true,
     );
   }
