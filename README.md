@@ -12,7 +12,7 @@ Tech used - Flutter , Firebase
 
 * Fork the repo and clone it.
 ```
-https://github.com/vikiwarrior/audio_flutter_app.git
+https://github.com/vikiwarrior/Audio-Flutter-App.git
 ```
 * In the same directory run the following commands(considering you have flutter installed and an android device connected)
 ```
