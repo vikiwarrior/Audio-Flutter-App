@@ -1,11 +1,16 @@
 import 'package:audio_flutter_app/auth/authentication_service.dart';
+import 'package:audio_flutter_app/provider/AudioUsers.dart';
 import 'package:audio_flutter_app/provider/audio.dart';
+import 'package:audio_flutter_app/provider/audiomodel.dart';
+import 'package:audio_flutter_app/provider/audios.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AudioList extends StatefulWidget {
   final List<Audio> references;
+
   const AudioList({
     Key key,
     @required this.references,
@@ -26,8 +31,9 @@ class _AudioListState extends State<AudioList> {
     isPlaying = false;
     audioPlayer = AudioPlayer();
     selectedIndex = -1;
-    AuthenticationService a;
-    userid = a.getUserid();
+    UserModel curruser = Provider.of<AudioUser>(context, listen: false).user;
+    userid = curruser.userid;
+    List<Audio> list = widget.references;
   }
 
   @override
@@ -35,36 +41,51 @@ class _AudioListState extends State<AudioList> {
     return ListView.builder(
       itemCount: widget.references.length,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          title: Text(widget.references.elementAt(index).title),
-          trailing: (selectedIndex == index) && (isPlaying == true)
-              ? IconButton(
-                  icon: Icon(Icons.pause),
-                  onPressed: () => _onpressedpause(index),
-                )
-              : IconButton(
-                  icon: Icon(Icons.play_arrow),
-                  onPressed: () => _onpressedplay(index),
-                ),
-          leading: (widget.references.elementAt(index).likedBy != null &&
-                  widget.references
-                      .elementAt(index)
-                      .likedBy
-                      .any((element) => element == userid))
-              ? IconButton(
-                  icon: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                  onPressed: () => _onpressedlike(index),
-                )
-              : IconButton(
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: Colors.red,
-                  ),
-                  onPressed: () => _onpressedunlike(index),
-                ),
+        return Column(
+          children: [
+            ListTile(
+              title: Text(widget.references.elementAt(index).title),
+              trailing: (selectedIndex == index) && (isPlaying == true)
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.pause,
+                        color: Color(0xFF6200EE),
+                      ),
+                      onPressed: () => _onpressedpause(index),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.play_arrow,
+                        color: Color(0xFF6200EE),
+                      ),
+                      onPressed: () => _onpressedplay(index),
+                    ),
+              leading: (widget.references.elementAt(index).likedBy != null &&
+                      widget.references
+                          .elementAt(index)
+                          .likedBy
+                          .any((element) => element == userid))
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                      onPressed: () => _onpressedlike(
+                          index, widget.references.elementAt(index).id),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: () => _onpressedunlike(
+                          index, widget.references.elementAt(index).id),
+                    ),
+            ),
+            Divider(
+              color: Colors.grey,
+            )
+          ],
         );
       },
     );
@@ -101,6 +122,15 @@ class _AudioListState extends State<AudioList> {
     });
   }
 
-  Future<void> _onpressedlike(int index) async {}
-  Future<void> _onpressedunlike(int index) async {}
+  Future<void> _onpressedlike(int index, String id) async {
+    print(index);
+    print(id);
+    await Provider.of<Audios>(context, listen: false).decrementlike(id, userid);
+  }
+
+  Future<void> _onpressedunlike(int index, String id) async {
+    print(index);
+    print(id);
+    await Provider.of<Audios>(context, listen: false).incrementlike(id, userid);
+  }
 }

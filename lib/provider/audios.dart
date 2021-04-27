@@ -6,12 +6,22 @@ import 'dart:convert';
 
 class Audios with ChangeNotifier {
   List<Audio> _items = [];
+
   List<Audio> get items {
     return [..._items];
   }
 
   List<Audio> favitems(String userid) {
     return _items.where((item) => item.owner == userid).toList();
+  }
+
+  List<Audio> countlikes(String userid) {
+    List<Audio> temp = _items.where((item) => item.owner == userid).toList();
+    return temp;
+  }
+
+  int countmy(String userid) {
+    return _items.where((item) => item.owner == userid).toList().length;
   }
 
   Future<void> fetchAndSetAudios() async {
@@ -28,11 +38,14 @@ class Audios with ChangeNotifier {
       extractedData.forEach((prodid, data) {
         // print(data['is']);
         loadedProducts.add(Audio(
-            id: prodid,
-            audioUrl: data['audioUrl'],
-            title: data['title'],
-            owner: data['owner'],
-            likedBy: data['likedBy']));
+          id: prodid,
+          audioUrl: data['audioUrl'],
+          title: data['title'],
+          owner: data['owner'],
+          likedBy: extractedData['likedBy'] != null
+              ? List.from(extractedData['likedBy'])
+              : null,
+        ));
       });
       _items = loadedProducts;
       notifyListeners();
@@ -46,16 +59,22 @@ class Audios with ChangeNotifier {
     const url =
         'https://audio-app-1305a-default-rtdb.firebaseio.com/audios.json';
     try {
+      List<String> aa = [];
+      aa.add("aaaa");
+      aa.add("bbbb");
       final response = await http.post(
         Uri.parse(url),
         body: jsonEncode({
           'title': audio.title,
           'audioUrl': audio.audioUrl,
           'owner': audio.owner,
-          'likedBy': audio.likedBy,
+          'likedBy': jsonEncode(aa),
         }),
       );
 
+      print(json.decode(response.body));
+
+      print('ee');
       final newProduct = Audio(
           audioUrl: audio.audioUrl,
           title: audio.title,
@@ -71,18 +90,101 @@ class Audios with ChangeNotifier {
     }
   }
 
-//increment - decrement 
-  void incrementlike(String id) {
+//increment - decrement
+  Future<void> incrementlike(String id, String userid) async {
+    print('1 .id = ' + id);
+    print('2 .userid = ' + userid);
 
-   // get karke fir post kardenge
-   //  
-    final url =
+    var url =
         'https://audio-app-1305a-default-rtdb.firebaseio.com/audios/$id.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    print(json.decode(response.body));
+
+    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+    jsonDecode(extractedData['likedBy']);
+    print(extractedData['likedBy']);
+    print(extractedData['likedBy'].runtimeType);
+    List<String> listwhennull = [];
+
+    List<String> likedlist = extractedData['likedBy'] != null
+        ? List.from(jsonDecode(extractedData['likedBy']))
+        : listwhennull;
+
+    likedlist.add(userid);
+
+    await http.patch(Uri.parse(url),
+        body: json.encode({
+          'id': extractedData['id'],
+          'title': extractedData['title'],
+          'audioUrl': extractedData['audioUrl'],
+          'owner': extractedData['owner'],
+          'likedBy': jsonEncode(likedlist),
+        }));
+
+    var index = _items.indexWhere((element) => element.id == id);
+    _items.elementAt(index);
+    _items[index] = Audio(
+        id: extractedData['id'],
+        audioUrl: extractedData['audioUrl'],
+        title: extractedData['title'],
+        owner: extractedData['owner'],
+        likedBy: likedlist);
+
+    // get karke fir post kardenge
+    //
     notifyListeners();
   }
 
-  void decrementlike() {
-    
+  Future<void> decrementlike(String id, String userid) async {
+    print('1 .id = ' + id);
+    print('2 .userid = ' + userid);
+
+    var url =
+        'https://audio-app-1305a-default-rtdb.firebaseio.com/audios/$id.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    print(json.decode(response.body));
+
+    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+    jsonDecode(extractedData['likedBy']);
+    print(extractedData['likedBy']);
+    print(extractedData['likedBy'].runtimeType);
+    List<String> listwhennull = [];
+
+    List<String> likedlist = extractedData['likedBy'] != null
+        ? List.from(jsonDecode(extractedData['likedBy']))
+        : listwhennull;
+
+    likedlist.remove(userid);
+
+    await http.patch(Uri.parse(url),
+        body: json.encode({
+          'id': extractedData['id'],
+          'title': extractedData['title'],
+          'audioUrl': extractedData['audioUrl'],
+          'owner': extractedData['owner'],
+          'likedBy': jsonEncode(likedlist),
+        }));
+
+    var index = _items.indexWhere((element) => element.id == id);
+    _items.elementAt(index);
+    _items[index] = Audio(
+        id: extractedData['id'],
+        audioUrl: extractedData['audioUrl'],
+        title: extractedData['title'],
+        owner: extractedData['owner'],
+        likedBy: likedlist);
+
+    // get karke fir post kardenge
+    //
+    notifyListeners();
+    // get karke fir post kardenge
+    //
   }
 
   // Future<void> updateProducts(String id, Product product) async {

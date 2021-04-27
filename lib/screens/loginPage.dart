@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../auth/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -143,19 +145,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
     print('The user wants to login with $_email and $_password');
   }
 
   Future<void> _createAccountPressed() async {
-    await context.read<AuthenticationService>().signIn(
+    await context.read<AuthenticationService>().signUp(
           email: _email,
           password: _password,
         );
     print('The user wants to create an accoutn with $_email and $_password');
-  }
-
-  void _passwordReset() {
-    print("The user wants a password reset request sent to $_email");
   }
 }

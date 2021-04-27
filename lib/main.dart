@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:audio_flutter_app/provider/AudioUsers.dart';
 import 'package:audio_flutter_app/provider/audio.dart';
+import 'package:audio_flutter_app/provider/audiomodel.dart';
 import 'package:audio_flutter_app/screens/profileEditPage.dart';
 import 'package:audio_flutter_app/widget/audiolist.dart';
 import 'provider/audios.dart';
@@ -23,7 +24,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  //
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.deepPurple,
         ),
         routes: {
           UserProfilePage.routeName: (ctx) => UserProfilePage(),
@@ -60,14 +60,15 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthenticationWrapper extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      return MyHomePage(title: 'Flutter Demo Home Page');
+      Provider.of<AudioUser>(context, listen: false).setuid(firebaseUser.uid);
+      return MyHomePage(title: 'Your Audio Feed ');
+    } else {
+      return LoginPage();
     }
-    return LoginPage();
   }
 }
 
@@ -93,30 +94,61 @@ class _MyHomePageState extends State<MyHomePage> {
     super.didChangeDependencies();
   }
 
+  Future<void> logout() async {
+    await context.read<AuthenticationService>().signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     final audioData = Provider.of<Audios>(context);
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF6200EE),
         title: Text(widget.title),
       ),
       body: Column(
         children: [
-          TextButton(
-              onPressed: () async {
-                await context.read<AuthenticationService>().signOut();
-              },
-              child: Text('Logout')),
-          TextButton(
-            child: Text('Profile page'),
-            onPressed: () {
-              Navigator.of(context).pushNamed(UserProfilePage.routeName);
-            },
-          ),
           Expanded(child: AudioList(references: audioData.items)),
         ],
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color(0xFF6200EE),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white.withOpacity(.60),
+        selectedFontSize: 14,
+        unselectedFontSize: 14,
+        onTap: (value) {
+          if (value == 0) {
+            MyHomePage(
+              title: 'Homepage',
+            );
+          } else if (value == 1) {
+            Navigator.of(context).pushNamed(UserProfilePage.routeName);
+          } else if (value == 2) {
+            logout();
+          }
+          // Respond to item press.
+        },
+        items: [
+          BottomNavigationBarItem(
+            title: Text('Home'),
+            icon: Icon(Icons.home),
+          ),
+          BottomNavigationBarItem(
+            title: Text('Profile'),
+            icon: Icon(Icons.account_circle_rounded),
+          ),
+          BottomNavigationBarItem(
+            title: Text('Logout'),
+            icon: Icon(Icons.exit_to_app),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xFF6200EE),
         onPressed: () async {
           FilePickerResult result = await FilePicker.platform.pickFiles();
           File audiofile = File(result.paths.first);
@@ -138,14 +170,15 @@ class _MyHomePageState extends State<MyHomePage> {
             uploadTask.whenComplete(() async {
               url = await audioFolderRef.getDownloadURL();
 
-              String userid = context.read<AuthenticationService>().getUserid();
-              
+              UserModel curruser =
+                  Provider.of<AudioUser>(context, listen: false).user;
+
               await audioData.addAudio(
                 Audio(
                     id: '',
                     title: audiofilename,
                     audioUrl: url,
-                    owner: userid,
+                    owner: curruser.userid,
                     likedBy: []),
               );
               print(url);
@@ -158,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         },
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.upload_rounded),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
