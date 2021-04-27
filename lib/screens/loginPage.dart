@@ -148,14 +148,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _createAccountPressed() async {
-
     await context.read<AuthenticationService>().signIn(
           email: _email,
           password: _password,
         );
     print('The user wants to create an accoutn with $_email and $_password');
-
-    
   }
 
   void _passwordReset() {

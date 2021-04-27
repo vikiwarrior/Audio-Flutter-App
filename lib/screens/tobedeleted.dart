@@ -25,10 +25,10 @@ class SignInPage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              await context.read<AuthenticationService>().signIn(
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                  );
+              await Provider.of(context)<AuthenticationService>().signIn(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+              );
 
               // fetch for user which id = firebase id
               //

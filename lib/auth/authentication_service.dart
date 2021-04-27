@@ -1,18 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthenticationService {
-  final FirebaseAuth _firebaseAuth;
+  FirebaseAuth _firebaseAuth;
 
   AuthenticationService(this._firebaseAuth);
 
   /// Changed to idTokenChanges as it updates depending on more cases.
-  Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
+  Stream<User> get authStateChanges => _firebaseAuth.idTokenChanges();
+
+  String getUserid() {
+    return _firebaseAuth.currentUser.uid;
+  }
 
   /// This won't pop routes so you could do something like
   /// Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   /// after you called this method if you want to pop all routes.
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+    _firebaseAuth.currentUser;
   }
 
   Future<String> updateProfile(

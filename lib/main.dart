@@ -9,9 +9,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'auth/authentication_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'screens/loginPage.dart';
 import 'screens/profilepage.dart';
 
@@ -98,8 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final audioData = Provider.of<Audios>(context);
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Column(
@@ -140,14 +138,14 @@ class _MyHomePageState extends State<MyHomePage> {
             uploadTask.whenComplete(() async {
               url = await audioFolderRef.getDownloadURL();
 
-              final User firebaseUser = context.read()<User>();
+              String userid = context.read<AuthenticationService>().getUserid();
 
               await audioData.addAudio(
                 Audio(
                     id: '',
                     title: audiofilename,
                     audioUrl: url,
-                    owner: firebaseUser.uid,
+                    owner: userid,
                     likedBy: []),
               );
               print(url);
