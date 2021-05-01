@@ -1,16 +1,29 @@
-# audio_flutter_app
+# An Audio App 
+Post and listen to music/recordings uploaded by other user .  
 
-A new Flutter project.
+Tech used - Flutter , Firebase 
 
-## Getting Started
+### Features
+* Signup/Login
+* Upload or Play audio  
+* Like Posts 
+ 
+### Installation and Setup
 
-This project is a starting point for a Flutter application.
+* Fork the repo and clone it.
+```
+https://github.com/vikiwarrior/Audio-Flutter-App.git
+```
+* In the same directory run the following commands(considering you have flutter installed and an android device connected)
+```
+flutter packages get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+### Preview
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| ![](asset/1.png) | ![](asset/2.png) | ![](asset/3.png) |
+|:--------------------------|:--------------------------|:--------------------------|
+| ![](asset/4.png) | ![](asset/5.png) | ![](asset/6.png) |
+              
+<p align='center'>Made With ❤️ By  <a href="https://github.com/vikiwarrior">Vikrant</a></p>
