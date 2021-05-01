@@ -23,8 +23,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   void initState() {
     // TODO: implement initState
-    //
-    //
+
     curruser = Provider.of<AudioUser>(context, listen: false).user;
     list =
         Provider.of<Audios>(context, listen: false).countlikes(curruser.userid);

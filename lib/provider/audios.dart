@@ -33,21 +33,28 @@ class Audios with ChangeNotifier {
 
       print(json.decode(response.body));
 
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final extractedData = json.decode(response.body);
       List<Audio> loadedProducts = [];
-      extractedData.forEach((prodid, data) {
+
+      extractedData.forEach((prodid, data) async {
         // print(data['is']);
+        //
+        //
+        print('aaaaaaaaaaaaaaaaaaaaaaa');
+        print(data['likedBy']);
+        print('aaaaaaaaaaaaaaaaaaaaa');
+
+        var temp = json.decode(data['likedBy']);
         loadedProducts.add(Audio(
           id: prodid,
           audioUrl: data['audioUrl'],
           title: data['title'],
           owner: data['owner'],
-          likedBy: extractedData['likedBy'] != null
-              ? List.from(extractedData['likedBy'])
-              : null,
+          likedBy: temp != null ? List.from(temp) : null,
         ));
       });
       _items = loadedProducts;
+
       notifyListeners();
     } catch (error) {
       // print('sss');
@@ -149,7 +156,7 @@ class Audios with ChangeNotifier {
 
     print(json.decode(response.body));
 
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final extractedData = json.decode(response.body);
 
     jsonDecode(extractedData['likedBy']);
     print(extractedData['likedBy']);
@@ -183,8 +190,6 @@ class Audios with ChangeNotifier {
     // get karke fir post kardenge
     //
     notifyListeners();
-    // get karke fir post kardenge
-    //
   }
 
   // Future<void> updateProducts(String id, Product product) async {
